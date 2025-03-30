@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoFocus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 20px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        
+        #timer {
+            font-size: min(240px, 25vw, 30vh);
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: 2px solid white;
+            cursor: pointer;
+            border-radius: 50px;
+            background-color: transparent;
+            color: white;
+            transition: 0.3s;
+        }
+        
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-height: 500px) {
+            h1 {
+                position: static;
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+            
+            #timer {
+                font-size: min(140px, 20vh);
+            }
+            
+            .buttons {
+                margin-top: 10px;
+            }
+            
+            button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GoFocus</h1>
+        <div id="timer">25:00</div>
+        <div class="buttons">
+            <button id="toggle" onclick="toggleTimer()">Start</button>
+            <button onclick="resetTimer()">Reset</button>
+            <button onclick="toggleFullscreen()">Fullscreen</button>
+        </div>
+    </div>
+    <script>
+        let timeLeft = 1500;
+        let isRunning = false;
+        let timer;
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateDisplay() {
+            document.getElementById('timer').textContent = formatTime(timeLeft);
+        }
+
+        function toggleTimer() {
+            const button = document.getElementById('toggle');
+            if (isRunning) {
+                clearInterval(timer);
+                button.textContent = "Start";
+            } else {
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, 1000);
+                button.textContent = "Pause";
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            timeLeft = 1500;
+            updateDisplay();
+            document.getElementById('toggle').textContent = "Start";
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    </script>
+</body>
+</html>
