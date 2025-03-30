@@ -159,7 +159,9 @@
         }
 
         function updateDisplay() {
-            document.getElementById('timer').textContent = formatTime(timeLeft);
+            const formattedTime = formatTime(timeLeft);
+            document.getElementById('timer').textContent = formattedTime;
+            document.title = `${formattedTime} - GoFocus`;
         }
 
         function toggleTimer() {
