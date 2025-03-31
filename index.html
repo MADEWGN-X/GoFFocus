@@ -99,6 +99,136 @@
             fill: white;
         }
 
+        /* Settings button styles */
+        #settings-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 65px; /* Position it next to the fullscreen button */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        #settings-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        #settings-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+        
+        /* Settings popup overlay */
+        #settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+        }
+        
+        /* Settings popup */
+        #settings-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(35, 35, 35, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            min-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: popIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        #settings-popup h2 {
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-row label {
+            margin-right: 10px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .setting-row input {
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 12px 15px;
+            width: 100px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .setting-row input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+        }
+        
+        .popup-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .popup-buttons button {
+            padding: 10px 22px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        
+        .popup-buttons button:first-child {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .popup-buttons button:last-child {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        .popup-buttons button:last-child:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        
         @media (max-height: 500px) {
             h1 {
                 position: static;
@@ -128,6 +258,35 @@
                 width: 16px;
                 height: 16px;
             }
+            
+            #settings-btn {
+                width: 30px;
+                height: 30px;
+                right: 55px;
+            }
+            
+            #settings-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            #settings-popup {
+                min-width: 90%;
+                padding: 25px 20px;
+            }
+            
+            .setting-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .setting-row input {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -141,16 +300,40 @@
         </div>
     </div>
     
+    <div id="settings-btn" onclick="openSettings()" title="Settings">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+        </svg>
+    </div>
+    
     <div id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
         </svg>
     </div>
     
+    <!-- Settings overlay -->
+    <div id="settings-overlay" onclick="closeSettings()"></div>
+    
+    <!-- Settings Popup -->
+    <div id="settings-popup">
+        <h2>Timer Settings</h2>
+        <div class="setting-row">
+            <label for="pomodoro-minutes">Pomodoro Duration (minutes)</label>
+            <input type="number" id="pomodoro-minutes" min="1" max="60" value="25">
+        </div>
+        
+        <div class="popup-buttons">
+            <button onclick="closeSettings()">Cancel</button>
+            <button onclick="saveSettings()">Save Settings</button>
+        </div>
+    </div>
+    
     <script>
         let timeLeft = 1500;
         let isRunning = false;
         let timer;
+        let pomodoroMinutes = 25; // Default value
 
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -186,7 +369,7 @@
         function resetTimer() {
             clearInterval(timer);
             isRunning = false;
-            timeLeft = 1500;
+            timeLeft = pomodoroMinutes * 60;
             updateDisplay();
             document.getElementById('toggle').textContent = "Start";
         }
@@ -196,6 +379,37 @@
                 document.documentElement.requestFullscreen();
             } else if (document.exitFullscreen) {
                 document.exitFullscreen();
+            }
+        }
+        
+        // Settings functions
+        function openSettings() {
+            document.getElementById('pomodoro-minutes').value = pomodoroMinutes;
+            document.getElementById('settings-overlay').style.display = 'block';
+            document.getElementById('settings-popup').style.display = 'block';
+        }
+        
+        function closeSettings() {
+            document.getElementById('settings-overlay').style.display = 'none';
+            document.getElementById('settings-popup').style.display = 'none';
+        }
+        
+        function saveSettings() {
+            const newPomodoroMinutes = parseInt(document.getElementById('pomodoro-minutes').value);
+            
+            // Validate input
+            if (newPomodoroMinutes > 0 && newPomodoroMinutes <= 60) {
+                pomodoroMinutes = newPomodoroMinutes;
+                
+                // Update timer if it's not running
+                if (!isRunning) {
+                    timeLeft = pomodoroMinutes * 60;
+                    updateDisplay();
+                }
+                
+                closeSettings();
+            } else {
+                alert('Please enter a valid time between 1 and 60 minutes.');
             }
         }
     </script>
